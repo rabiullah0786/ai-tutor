@@ -1,99 +1,123 @@
-// import OpenAI from "openai";
-
-// export async function POST(req) {
-//   console.log("🔑 OPENAI_API_KEY loaded:", process.env.OPENAI_API_KEY ? "YES" : "NO");
-
-//   try {
-//     const body = await req.json();
-
-//     const openai = new OpenAI({
-//       apiKey: process.env.OPENAI_API_KEY,
-//     });
-
-//     const response = await openai.chat.completions.create({
-//       model: "gpt-4o-mini",
-//       messages: [{ role: "user", content: body.message }],
-//     });
-
-//     console.log("✅ AI response:", response.choices[0].message.content);
-
-//     return Response.json({ reply: response.choices[0].message.content });
-//   } catch (err) {
-//     console.error("❌ Gemini API error:", err);
-//     return Response.json({ error: err.message });
-//   }
-// }
-
 
 
 import OpenAI from "openai";
-
-export const runtime = "edge"; // fast edge runtime (if Next.js 13+)
+export const runtime = "edge";
+import { marked } from "marked";
 
 export async function POST(req) {
   try {
-    console.log("🔑 OPENAI_API_KEY loaded:", process.env.OPENAI_API_KEY ? "YES" : "NO");
+    const contentType = req.headers.get("content-type") || "";
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+    // =============================================================
+    // 📌 CLEAN MARKDOWN PROMPT (NO HTML ANYMORE)
+    // =============================================================
+    function formatPrompt(userMessage) {
+      return `
+You MUST answer ONLY in clean Markdown.
+
+Markdown Formatting Rules:
+- Use ## for headings
+- Use **bold** for important words
+- Use - or numbers for bullet points
+- Use normal paragraphs for explanation
+- Make it clean like ChatGPT answers
+
+User question:
+${userMessage}
+`;
+    }
+
+    // =============================================================
+    // 🖼 IMAGE REQUEST HANDLER
+    // =============================================================
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await req.formData();
+      const file = formData.get("file");
+      const message = formData.get("message") || "Describe this image.";
+
+      if (!file) {
+        return new Response(JSON.stringify({ error: "No image provided." }), {
+          status: 400,
+        });
+      }
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const base64Image = buffer.toString("base64");
+
+      const completion = await client.chat.completions.create({
+        model: "gpt-4.1-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: formatPrompt(message) },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${file.type};base64,${base64Image}`,
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 400,
+      });
+
+      const aiResponse = completion.choices[0].message.content;
+
+      // Convert Markdown → HTML
+      const html = marked(aiResponse);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          answer: html,
+          type: "image",
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // =============================================================
+    // ✍ TEXT MESSAGE HANDLER
+    // =============================================================
     const { message } = await req.json();
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
     const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: message }],
-   
+      model: "gpt-4.1-mini",
+      messages: [{ role: "user", content: formatPrompt(message) }],
+      max_tokens: 400,
     });
 
     const aiResponse = completion.choices[0].message.content;
-    console.log("✅ AI response:", aiResponse);
 
-    // ✅ frontend ke liye JSON me proper key send karo
-    return new Response(JSON.stringify({ answer: aiResponse }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    // Convert Markdown → HTML
+    const html = marked(aiResponse);
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        answer: html,
+        type: "text",
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
-    console.error("❌ OpenAI API Error:", error);
-    return new Response(JSON.stringify({ error: "AI request failed" }), {
-      status: 500,
-    });
+    console.error("❌ API Error:", error);
+
+    return new Response(
+      JSON.stringify({
+        error: error.message || "AI request failed",
+        rateLimited: error?.status === 429 ? true : false,
+      }),
+      { status: error?.status || 500 }
+    );
   }
 }
-
-
-
-
-// import OpenAI from "openai";
-
-// export const runtime = "edge"; // fast edge runtime (if Next.js 13+)
-
-// export async function POST(req) {
-//   const { message } = await req.json();
-
-//   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-//   const stream = await client.chat.completions.create({
-//     model: "gpt-4o-mini", // fastest model
-//     messages: [{ role: "user", content: message }],
-//     stream: true, // 👈 ye important hai
-//   });
-
-//   const encoder = new TextEncoder();
-//   const decoder = new TextDecoder();
-
-//   const readableStream = new ReadableStream({
-//     async start(controller) {
-//       for await (const chunk of stream) {
-//         const text = chunk.choices[0]?.delta?.content || "";
-//         controller.enqueue(encoder.encode(text));
-//       }
-//       controller.close();
-//     },
-//   });
-
-//   return new Response(readableStream, {
-//     headers: { "Content-Type": "text/plain" },
-//   });
-// }

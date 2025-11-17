@@ -25,3 +25,26 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+
+mark {
+  background-color: #fff3a3; /* soft pastel yellow */
+  color: #222;              /* readable text color */
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+

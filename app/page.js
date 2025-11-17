@@ -1,164 +1,209 @@
-"use client";
-import { Mic, Send, Plus } from "lucide-react";
-import { useState } from "react";
 
-// Function to highlight important keywords in the answer
-const highlightImportant = (text) => {
-  if (!text) return "";
-  const keywords = [
-    "PHOTOSYNTHESIS", "RESPIRATION", "CELL", "ATOM", "MOLECULE",
-    "EQUATION", "GRAVITY", "FORCE", "ENERGY", "CURRENT", "RESISTANCE",
-    "ACID", "BASE", "SALT", "GLUCOSE", "OXYGEN", "CARBON DIOXIDE",
-    "INERTIA", "MASS", "ACCELERATION"
-  ];
-  let out = text;
-  // Replace keywords with highlighted format, case-insensitive
-  keywords.forEach((kw) => {
-    const re = new RegExp(`\\b${kw}\\b`, "gi");
-    out = out.replace(re, (match) => `<u><b>${match}</b></u>`);
-  });
-  // Convert newlines to <br/>
-  out = out.replace(/\n/g, "<br/>");
-  return out;
-};
+"use client";
+import { Mic, Send } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import LoginButton from "./components/LoginButton";
+import { marked } from "marked";
 
 export default function ChatBox() {
+  const { data: session } = useSession();
+
   const [showLoginOptions, setShowLoginOptions] = useState(false);
   const [message, setMessage] = useState("");
-  const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const fileInputRef = useRef(null);
 
-  // File upload handler
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log("📁 File uploaded:", file.name);
-      alert(`File uploaded: ${file.name}`);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
+  }, [messages]);
+  
+  
+
+
+  // ========== SAFE CLEANER FUNCTION (NO ERROR) ==========
+  const formatAIText = (text) => {
+    const safe = typeof text === "string" ? text : "";
+
+    return safe
+      // Remove newlines before :
+      .replace(/\n\s*:/g, ":")
+
+      // Convert headings into bold + underline + text-lg
+      .replace(/(^|\n)([^:<>\n]{2,}):/g, (m, p1, p2) => {
+        return `${p1}<div class="mt-3 mb-1 font-bold underline text-lg">${p2}:</div>`;
+      })
+
+      // Convert "-" lists into nice bullets
+      .replace(/\n-\s+/g, `\n• `);
   };
 
-  // Send AI request when user submits
+  // ========== FILE UPLOAD ==========
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setMessages((prev) => [
+      ...prev,
+      { type: "file", name: file.name, file },
+      { role: "user", content: "📎 Uploaded: " + file.name }
+    ]);
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      const aiText = data.highlighted || data.answer;
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: formatAIText(aiText) },
+      ]);
+    } catch (err) {
+      console.error(err);
+    }
+
+    setLoading(false);
+  };
+
+  // ========== SEND TEXT MESSAGE ==========
   const handleSend = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
-    setAnswer("<i>Thinking...</i>");
+
+    const userMsg = message.trim();
+    setMessage("");
+
+    setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
     setLoading(true);
+
     try {
-      const res = await fetch("/api/ask", { // Endpoint matches api/ask/route.js
+      const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message: userMsg }),
       });
-      const data = await res.json();
-      console.log("✅ API raw response:", data);
 
-      // Highlight important points
-      const finalText = highlightImportant(data.answer);
-      setAnswer(finalText);
-    } catch (error) {
-      setAnswer("⚠️ Error fetching answer from AI. Please try again.");
-      console.error("❌ Fetch error:", error);
+      const data = await res.json();
+      const aiText = data.highlighted || data.answer || "No response.";
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: formatAIText(aiText) },
+      ]);
+    } catch (err) {
+      console.error(err);
     }
+
     setLoading(false);
-    setMessage("");
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Navbar */}
-      <nav className="flex justify-between items-center p-4 bg-white shadow-md relative">
-        {/* Left: Login Button */}
+
+      {/* NAVBAR */}
+      <nav className="flex justify-between items-center p-4 bg-white shadow-md">
         <div className="relative">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="px-5 py-2 bg-blue-600 text-white rounded-full font-medium shadow hover:bg-blue-700 transition flex items-center gap-2"
           >
-            Login
+            {session ? "Account" : "Login"}
           </button>
-          {/* Dropdown */}
+
           {showLoginOptions && (
-            <div className="absolute mt-2 bg-white border rounded-lg shadow-lg w-40">
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                <span>📱</span>
-                <span>Mobile</span>
-              </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                <span>🔍</span>
-                <span>Google</span>
-              </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                <span>🍎</span>
-                <span>Apple</span>
-              </button>
+            <div className="absolute left-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border p-4 z-50">
+              {!session ? <LoginButton /> : <LoginButton />}
             </div>
           )}
         </div>
-        {/* Right: Project Name */}
+
         <div className="text-xl font-bold text-blue-600">EduMind AI</div>
       </nav>
 
-      {/* Main Section */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-4">
+      {/* MAIN AREA */}
+      <main className="flex-1 flex flex-col items-center text-center px-4 py-4">
+
         <h1 className="text-3xl font-semibold mb-4">
           Ask with <span className="text-blue-600">AI</span> for Better Learning
         </h1>
+
         <p className="text-gray-600 mb-6 max-w-md">
-          Get instant answers, explanations, and practice questions for any topic.
+          Get instant answers, explanations, and highlighted key points.
         </p>
-        {/* Chat Box */}
+
+        {/* INPUT BOX (BOTTOM FIXED) */}
         <form
           onSubmit={handleSend}
-          className="w-full max-w-md flex items-center bg-white shadow-lg rounded-lg p-2 border border-gray-200 transition"
+          className="fixed bottom-2 left-0 right-0 w-full max-w-md mx-auto flex items-center 
+             bg-white shadow-lg rounded-xl p-3 border mb-3"
         >
-          {/* Upload Button */}
-          <label
-            htmlFor="fileUpload"
-            className="p-2 rounded-lg hover:bg-gray-100 transition flex items-center justify-center mx-1 cursor-pointer"
-          >
-            <Plus className="w-5 h-5 text-gray-600 hover:text-blue-600 transition" />
-            <input
-              id="fileUpload"
-              type="file"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
+          {/* ADD BUTTON */}
+          <label className="cursor-pointer bg-gray-200 rounded-full shadow hover:bg-gray-300 
+                    w-12 h-12 flex items-center justify-center text-2xl font-bold">
+            +
+            <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
           </label>
-          {/* Input Field */}
+
+          {/* TEXT INPUT */}
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask your question here..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-800 placeholder-gray-500 bg-white"
+            placeholder="Ask your question..."
+            className="flex-1 px-4 py-2 border rounded-lg ml-3"
           />
-          {/* Mic Button */}
-          <button
-            type="button"
-            onClick={() => alert("🎙️ Voice input coming soon!")}
-            className="p-2 rounded-lg hover:bg-gray-100 transition flex items-center justify-center mx-1"
-          >
-            <Mic className="w-5 h-5 text-gray-600 hover:text-blue-600 transition" />
+
+          {/* MIC ICON */}
+          <button type="button" className="p-2 rounded-lg hover:bg-gray-100 ml-2">
+            <Mic className="w-5 h-5 text-gray-600" />
           </button>
-          {/* Send Button */}
-          <button
-            type="submit"
-            className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition flex items-center justify-center shadow-md"
-          >
+
+          {/* SEND BUTTON */}
+          <button type="submit" className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 ml-2">
             <Send className="w-5 h-5 text-white" />
           </button>
         </form>
-        {/* Display answer after question is sent */}
-        {answer && (
-          <div
-            className="mt-6 text-left p-4 bg-blue-50 text-gray-800 rounded-lg border border-blue-200 shadow-md w-full max-w-md"
-            dangerouslySetInnerHTML={{ __html: answer }}
-          />
-        )}
 
+
+        {/* 🟨 Messages Display */}
+        <div
+          className="mt-6 w-full space-y-4 text-left px-4 h-full overflow-y-auto"
+          ref={scrollRef}
+        >
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`p-5 rounded-xl shadow leading-relaxed prose prose-lg max-w-none
+      ${msg.role === "user"
+                  ? "bg-blue-100 text-blue-900"
+                  : "bg-yellow-50 text-black"
+                }`}
+              dangerouslySetInnerHTML={{
+  __html: typeof msg.content === "string" ? marked(msg.content) : ""
+}}
+
+            />
+          ))}
+
+          {loading && <div className="text-gray-500 italic mt-2">Thinking...</div>}
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer className="text-center text-sm text-gray-500 py-4">
+      <footer className="text-center text-sm text-gray-500 ">
         © {new Date().getFullYear()} EduMind AI — All rights reserved.
       </footer>
     </div>

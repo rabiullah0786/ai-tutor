@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "encoding": "^0.1.13",
     "lucide-react": "^0.553.0",
+    "marked": "^17.0.0",
     "next": "13.5.11",
+    "next-auth": "^4.24.13",
     "openai": "^4.12.0",
     "react": "^18",
     "react-dom": "^18"

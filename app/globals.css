@@ -47,4 +47,17 @@ mark {
   font-weight: 600;
 }
 
+/* Hide Scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
 
+
+/* homepage scrollbar hide code */
+html, body {
+  overflow: hidden;
+}

@@ -1,17 +1,23 @@
 
 
+import mongoose from "mongoose";
 import OpenAI from "openai";
-export const runtime = "edge";
 import { marked } from "marked";
+import connectDB from "../../../lib/mongodb";
+import Question from "../../../models/Question";
 
+// ================================
+// 📌 AI + DATABASE ENABLED ROUTE
+// ================================
 export async function POST(req) {
   try {
+    await connectDB(); // <- DB Connect
     const contentType = req.headers.get("content-type") || "";
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    // =============================================================
-    // 📌 CLEAN MARKDOWN PROMPT (NO HTML ANYMORE)
-    // =============================================================
+    // ===========================
+    // 📌 CLEAN MARKDOWN PROMPT
+    // ===========================
     function formatPrompt(userMessage) {
       return `
 You MUST answer ONLY in clean Markdown.
@@ -20,32 +26,35 @@ Markdown Formatting Rules:
 - Use ## for headings
 - Use **bold** for important words
 - Use - or numbers for bullet points
-- Use normal paragraphs for explanation
-- Make it clean like ChatGPT answers
+- Always write easy-to-understand explanation
+- Make layout clean like ChatGPT
 
 User question:
 ${userMessage}
 `;
     }
 
-    // =============================================================
+    // ================================
     // 🖼 IMAGE REQUEST HANDLER
-    // =============================================================
+    // ================================
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
-      const file = formData.get("file");
+      const file = formData.get("image");
       const message = formData.get("message") || "Describe this image.";
+      const email = formData.get("email") || "guest";
 
       if (!file) {
-        return new Response(JSON.stringify({ error: "No image provided." }), {
-          status: 400,
-        });
+        return new Response(
+          JSON.stringify({ error: "No image provided." }),
+          { status: 400 }
+        );
       }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
       const base64Image = buffer.toString("base64");
 
-      const completion = await client.chat.completions.create({
+      const response = await client.chat.completions.create({
         model: "gpt-4.1-mini",
         messages: [
           {
@@ -61,19 +70,31 @@ ${userMessage}
             ],
           },
         ],
-        max_tokens: 400,
+        max_tokens: 500,
       });
 
-      const aiResponse = completion.choices[0].message.content;
+      const aiResponse = response.choices[0].message.content;
 
-      // Convert Markdown → HTML
-      const html = marked(aiResponse);
+      // 👇 Markdown → HTML + padding & gap
+      const html =
+        `<div style="padding:12px; line-height:1.55; display:block; gap:8px;">` +
+        marked(aiResponse) +
+        `</div>`;
+
+      // ===========================
+      // 📌 SAVE TO DATABASE
+      // ===========================
+      await Question.create({
+        email,
+        question: message,
+        type: "image",
+      });
 
       return new Response(
         JSON.stringify({
           success: true,
-          answer: html,
           type: "image",
+          content: html,
         }),
         {
           status: 200,
@@ -82,27 +103,46 @@ ${userMessage}
       );
     }
 
-    // =============================================================
+    // ================================
     // ✍ TEXT MESSAGE HANDLER
-    // =============================================================
-    const { message } = await req.json();
+    // ================================
+    const { message, email } = await req.json();
+
+    if (!message) {
+      return new Response(
+        JSON.stringify({ error: "Message is required." }),
+        { status: 400 }
+      );
+    }
 
     const completion = await client.chat.completions.create({
       model: "gpt-4.1-mini",
       messages: [{ role: "user", content: formatPrompt(message) }],
-      max_tokens: 400,
+      max_tokens: 500,
     });
 
     const aiResponse = completion.choices[0].message.content;
 
-    // Convert Markdown → HTML
-    const html = marked(aiResponse);
+    // 👇 Markdown → HTML + padding & gap
+    const html =
+      `<div style="padding:12px; line-height:1.55; display:block; gap:8px;">` +
+      marked(aiResponse) +
+      `</div>`;
+
+    // ===========================
+    // 📌 SAVE TO DATABASE
+    // ===========================
+    await Question.create({
+      email: email || "guest",
+      question: message,
+      type: "text",
+    });
 
     return new Response(
       JSON.stringify({
         success: true,
-        answer: html,
         type: "text",
+        content: html,
       }),
       {
         status: 200,
@@ -115,7 +155,7 @@ ${userMessage}
     return new Response(
       JSON.stringify({
         error: error.message || "AI request failed",
-        rateLimited: error?.status === 429 ? true : false,
+        rateLimited: error?.status === 429,
       }),
       { status: error?.status || 500 }
     );

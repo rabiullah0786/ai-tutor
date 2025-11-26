@@ -7,6 +7,8 @@ import { useSession } from "next-auth/react";
 import LoginButton from "./components/LoginButton";
 import { marked } from "marked";
 
+
+
 export default function ChatBox() {
   const { data: session } = useSession();
 
@@ -123,14 +125,27 @@ export default function ChatBox() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+     
       {/* NAVBAR */}
       <nav className="flex justify-between items-center p-4 bg-white shadow-md sticky top-0 z-20">
         <div className="relative">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
-            className="px-5 py-2 bg-blue-600 text-white rounded-full font-medium shadow hover:bg-blue-700 transition flex items-center gap-2"
+            className="px-5 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
           >
-            {session ? "Account >" : "Login"}
+            {/* MOBILE IMAGE */}
+            
+            <img
+              src="/account-logo.svg"
+              alt="Logo"
+              className=" w-6 h-6 md:hidden"
+            />
+            
+
+            {/* DESKTOP TEXT */}
+            <span className="hidden md:block">
+              {session ? "Account >" : "Login"}
+            </span>
           </button>
 
           {showLoginOptions && (
@@ -140,16 +155,19 @@ export default function ChatBox() {
           )}
         </div>
 
-        <div className="text-xl font-bold text-blue-600">EduMind AI</div>
+        <div className="flex items-center gap-1 text-2xl font-bold text-blue-600">
+        <div className="w-9 h-10  " ><img src="/favicon.png" alt="" /></div>
+            Flixy-AI
+        </div>
       </nav>
 
       {/* MAIN AREA */}
-      <main className="flex-1 flex flex-col items-center text-center px-4 py-4">
-        <h1 className="text-3xl font-semibold mb-4">
+      <main className="flex-1 flex flex-col items-center text-center px-2 py-2">
+        <h1 className="text-3xl font-semibold mb-2">
           Ask with <span className="text-blue-600">AI</span>
         </h1>
 
-        <div className="text-gray-600 mb-6 text-sm">
+        <div className="text-gray-600 mb-2 text-sm">
           <p>Get instant answers, explanations, and more</p>
           <p>specially created for 10+12 students.</p>
         </div>
@@ -189,7 +207,7 @@ export default function ChatBox() {
 
         {/* CHAT BOX */}
         <div
-          className="w-full max-w-4xl space-y-4 text-left px-3 py-3 rounded-xl h-[50vh] overflow-y-auto bg-white shadow pb-20"
+          className="w-full max-w-4xl space-y-4 text-left px-3 py-3 rounded-xl h-[50vh] overflow-y-auto bg-white shadow pb-16"
           ref={scrollRef}
         >
           {/* IMAGE PREVIEW */}
@@ -225,14 +243,14 @@ export default function ChatBox() {
       {/* INPUT AREA */}
       <form
         onSubmit={handleSend}
-        className="fixed bottom-4 left-0 right-0 w-full max-w-2xl mx-auto flex items-center bg-white shadow-lg rounded-full p-3 border"
+        className="fixed bottom-4 left-0 right-0 w-full max-w-2xl mx-auto flex items-center bg-white shadow-lg rounded-full p-2 border"
       >
         {/* + BUTTON */}
         <div className="relative mr-2">
           <button
             type="button"
             onClick={() => setShowPlusMenu(!showPlusMenu)}
-            className="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full text-2xl font-bold"
+            className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full text-2xl font-bold"
           >
             +
           </button>
@@ -263,7 +281,7 @@ export default function ChatBox() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={`Ask your question... (${selectedMode})`}
-          className="flex-1 px-4 py-2 border rounded-xl focus:outline-none"
+          className="flex-1 px-3 py-2  rounded-xl  focus:ring-0 focus:outline-none"
         />
 
         <button

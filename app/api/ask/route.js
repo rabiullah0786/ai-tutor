@@ -125,7 +125,7 @@ ${userMessage}
 
     // 👇 Markdown → HTML + padding & gap
     const html =
-      `<div style="padding:12px; line-height:1.55; display:block; gap:8px;">` +
+      `<div style="padding:14px; line-height:1.55; display:block; gap:10px;">` +
       marked(aiResponse) +
       `</div>`;
 

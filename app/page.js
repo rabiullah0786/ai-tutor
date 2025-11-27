@@ -125,7 +125,7 @@ export default function ChatBox() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-     
+
       {/* NAVBAR */}
       <nav className="flex justify-between items-center p-4 bg-white shadow-md sticky top-0 z-20">
         <div className="relative">
@@ -134,13 +134,13 @@ export default function ChatBox() {
             className="px-5 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
           >
             {/* MOBILE IMAGE */}
-            
+
             <img
               src="/account-logo.svg"
               alt="Logo"
               className=" w-6 h-6 md:hidden"
             />
-            
+
 
             {/* DESKTOP TEXT */}
             <span className="hidden md:block">
@@ -156,8 +156,8 @@ export default function ChatBox() {
         </div>
 
         <div className="flex items-center gap-1 text-2xl font-bold text-blue-600">
-        <div className="w-9 h-10  " ><img src="/favicon.png" alt="" /></div>
-            Flixy-AI
+          <div className="w-9 h-10  " ><img src="/favicon.png" alt="" /></div>
+          Flixy-AI
         </div>
       </nav>
 
@@ -224,15 +224,29 @@ export default function ChatBox() {
           {messages.map((msg, i) => (
             <div
               key={i}
-              className={`p-4 rounded-2xl shadow-md prose prose-sm max-w-none ${msg.role === "user"
-                ? "bg-blue-100 text-blue-900 ml-auto max-w-[80%]"
-                : "bg-gray-100 text-gray-900 mr-auto max-w-[85%]"
-                }`}
-              dangerouslySetInnerHTML={{
-                __html: marked(msg.content || ""),
-              }}
+              className={
+                "p-5 rounded-2xl shadow-md max-w-none leading-relaxed text-[16px] " +
+
+                // Bigger headings + underline + gaps
+                "[&_h1]:text-3xl [&_h1]:font-bold [&_h1 :underline [&_h1]:mb-6 " +
+                "[&_h2]:text-2xl [&_h2]:font-semibold [&_h2]: [&_h2]:mb-5 " +
+                "[&_h3]:text-2xl [&_h3]:font-semibold [&_h3]: mb-4 " +
+
+                // Paragraph spacing
+                "[&_p]:mb-6 " +
+
+                // List spacing
+                "[&_ul]:mb-3 [&_ol]:mb-3 " +
+
+                // User / bot bubbles
+                (msg.role === "user"
+                  ? "bg-blue-100 text-blue-900  py-2 mx-2 max-w-[70%]"
+                  : "bg-gray-100 text-gray-900 mr-auto max-w-[85%]")
+              }
+              dangerouslySetInnerHTML={{ __html: marked(msg.content || "") }}
             />
           ))}
+
 
           {loading && (
             <div className="text-gray-500 italic animate-pulse">Thinking...</div>

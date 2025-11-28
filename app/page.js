@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import LoginButton from "./components/LoginButton";
 import { marked } from "marked";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 
 
@@ -16,6 +18,8 @@ export default function ChatBox() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [answer, setAnswer] = useState("");
+
 
   const [selectedMode, setSelectedMode] = useState("Normal");
 
@@ -32,6 +36,50 @@ export default function ChatBox() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+  
+
+
+
+const downloadPDF = async (htmlContent) => {
+  // Create temporary container
+  const tempDiv = document.createElement("div");
+  tempDiv.style.position = "absolute";
+  tempDiv.style.left = "-9999px";
+  tempDiv.style.width = "800px"; // maintain layout
+  tempDiv.innerHTML = htmlContent;
+  document.body.appendChild(tempDiv);
+
+  // Convert HTML → Canvas
+  const canvas = await html2canvas(tempDiv, {
+    scale: 2,
+    backgroundColor: "#fff",
+    useCORS: true,
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const imgWidth = 190; // page width in mm
+  const pageHeight = 295; // page height in mm
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = 10;
+
+  pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+  heightLeft -= pageHeight;
+
+  while (heightLeft > 0) {
+    pdf.addPage();
+    position = heightLeft - imgHeight + 10;
+    pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+  }
+
+  pdf.save("answer.pdf");
+  document.body.removeChild(tempDiv);
+};
+
 
   // Save user on login
   useEffect(() => {
@@ -221,31 +269,52 @@ export default function ChatBox() {
             </div>
           )}
 
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={
-                "p-5 rounded-2xl shadow-md max-w-none leading-relaxed text-[16px] " +
 
-                // Bigger headings + underline + gaps
-                "[&_h1]:text-3xl [&_h1]:font-bold [&_h1 :underline [&_h1]:mb-6 " +
-                "[&_h2]:text-2xl [&_h2]:font-semibold [&_h2]: [&_h2]:mb-5 " +
-                "[&_h3]:text-2xl [&_h3]:font-semibold [&_h3]: mb-4 " +
+          {messages.map((msg, i) => {
+            const isLastBotMessage = i === messages.length - 1 && msg.role === "assistant";
 
-                // Paragraph spacing
-                "[&_p]:mb-6 " +
+            return (
+              <div
+                key={i}
+                className={
+                  "relative p-5 rounded-2xl shadow-md max-w-none leading-relaxed text-[16px] " +
 
-                // List spacing
-                "[&_ul]:mb-3 [&_ol]:mb-3 " +
+                  // Bigger headings + underline + gaps
+                  "[&_h1]:text-3xl [&_h1]:font-bold [&_h1]:underline [&_h1]:mb-6 " +
+                  "[&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:underline [&_h2]:mb-5 " +
+                  "[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-4 " +
 
-                // User / bot bubbles
-                (msg.role === "user"
-                  ? "bg-blue-100 text-blue-900  py-2 mx-2 max-w-[70%]"
-                  : "bg-gray-100 text-gray-900 mr-auto max-w-[85%]")
-              }
-              dangerouslySetInnerHTML={{ __html: marked(msg.content || "") }}
-            />
-          ))}
+                  // Paragraph spacing
+                  "[&_p]:mb-6 " +
+
+                  // List spacing
+                  "[&_ul]:mb-3 [&_ol]:mb-3 " +
+
+                  (msg.role === "user"
+                    ? "bg-blue-100 text-blue-900 py-2 mx-2 max-w-[70%]"
+                    : "bg-gray-100 text-gray-900 mr-auto max-w-[85%]")
+                }
+              >
+                {/* AI Answer */}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: marked(msg.content || "")
+                  }}
+                />
+
+                {/* PDF Button — only show for last AI message */}
+                {isLastBotMessage && (
+                  <button
+                    onClick={() => downloadPDF(msg.content)}
+                    className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
+                  >
+                    Download PDF
+                  </button>
+                )}
+              </div>
+            );
+          })}
+
 
 
           {loading && (
@@ -253,6 +322,7 @@ export default function ChatBox() {
           )}
         </div>
       </main>
+
 
       {/* INPUT AREA */}
       <form

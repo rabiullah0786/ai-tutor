@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "encoding": "^0.1.13",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.4",
     "lucide-react": "^0.553.0",
     "marked": "^17.0.0",
     "mongoose": "^8.20.0",

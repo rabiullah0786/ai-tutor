@@ -1,5 +1,4 @@
 
-
 "use client";
 import { Mic, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
@@ -8,7 +7,7 @@ import LoginButton from "./components/LoginButton";
 import { marked } from "marked";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-
+import Link from "next/link";
 
 
 export default function ChatBox() {
@@ -36,49 +35,49 @@ export default function ChatBox() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
-  
 
 
 
-const downloadPDF = async (htmlContent) => {
-  // Create temporary container
-  const tempDiv = document.createElement("div");
-  tempDiv.style.position = "absolute";
-  tempDiv.style.left = "-9999px";
-  tempDiv.style.width = "800px"; // maintain layout
-  tempDiv.innerHTML = htmlContent;
-  document.body.appendChild(tempDiv);
 
-  // Convert HTML → Canvas
-  const canvas = await html2canvas(tempDiv, {
-    scale: 2,
-    backgroundColor: "#fff",
-    useCORS: true,
-  });
+  const downloadPDF = async (htmlContent) => {
+    // Create temporary container
+    const tempDiv = document.createElement("div");
+    tempDiv.style.position = "absolute";
+    tempDiv.style.left = "-9999px";
+    tempDiv.style.width = "800px"; // maintain layout
+    tempDiv.innerHTML = htmlContent;
+    document.body.appendChild(tempDiv);
 
-  const imgData = canvas.toDataURL("image/png");
-  const pdf = new jsPDF("p", "mm", "a4");
+    // Convert HTML → Canvas
+    const canvas = await html2canvas(tempDiv, {
+      scale: 2,
+      backgroundColor: "#fff",
+      useCORS: true,
+    });
 
-  const imgWidth = 190; // page width in mm
-  const pageHeight = 295; // page height in mm
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
 
-  let heightLeft = imgHeight;
-  let position = 10;
+    const imgWidth = 190; // page width in mm
+    const pageHeight = 295; // page height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-  pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight;
+    let heightLeft = imgHeight;
+    let position = 10;
 
-  while (heightLeft > 0) {
-    pdf.addPage();
-    position = heightLeft - imgHeight + 10;
     pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
-  }
 
-  pdf.save("answer.pdf");
-  document.body.removeChild(tempDiv);
-};
+    while (heightLeft > 0) {
+      pdf.addPage();
+      position = heightLeft - imgHeight + 10;
+      pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save("answer.pdf");
+    document.body.removeChild(tempDiv);
+  };
 
 
   // Save user on login
@@ -175,11 +174,11 @@ const downloadPDF = async (htmlContent) => {
     <div className="min-h-screen flex flex-col bg-gray-50">
 
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center p-4 bg-white shadow-md sticky top-0 z-20">
-        <div className="relative">
+      <nav className="flex justify-between items-center p-4 bg-white shadow-md sticky  top-0 z-20">
+        <div className=" reletive ">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
-            className="px-5 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
+            className=" px-5 py-2  bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
           >
             {/* MOBILE IMAGE */}
 
@@ -189,12 +188,13 @@ const downloadPDF = async (htmlContent) => {
               className=" w-6 h-6 md:hidden"
             />
 
-
             {/* DESKTOP TEXT */}
             <span className="hidden md:block">
               {session ? "Account >" : "Login"}
             </span>
           </button>
+
+
 
           {showLoginOptions && (
             <div className="absolute left-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border p-4 z-50">
@@ -219,6 +219,8 @@ const downloadPDF = async (htmlContent) => {
           <p>Get instant answers, explanations, and more</p>
           <p>specially created for 10+12 students.</p>
         </div>
+
+
 
         {/* MODE SELECT BUTTONS */}
         <div className="flex gap-3 mb-4">
@@ -268,6 +270,26 @@ const downloadPDF = async (htmlContent) => {
               />
             </div>
           )}
+
+
+          {/* Upgrade button bottom left */}
+          <div className="fixed bottom-16 left-2 z-50">
+            <Link href="/upgrade">
+              <button className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold shadow-lg flex items-center gap-2">
+
+                {/* Mobile icon only */}
+                <span className="block md:hidden text-sm">
+                  ⚡
+                </span>
+
+                {/* Desktop text only */}
+                <span className="hidden md:block">
+                  Upgrade
+                </span>
+
+              </button>
+            </Link>
+          </div>
 
 
           {messages.map((msg, i) => {

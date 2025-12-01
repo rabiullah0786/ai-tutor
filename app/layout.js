@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "AI-tutor",
+  title: "Flixy-AI",
   icons: {
     icon: "/favicon.png",
   },

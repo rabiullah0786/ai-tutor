@@ -8,6 +8,10 @@ import { marked } from "marked";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Link from "next/link";
+import { BoltIcon } from "@heroicons/react/24/solid";
+
+
+
 
 
 export default function ChatBox() {
@@ -178,17 +182,22 @@ export default function ChatBox() {
         <div className=" reletive ">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
-            className=" px-5 py-2  bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
+            className="px-5 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
           >
-            {/* MOBILE IMAGE */}
+            {/* MOBILE VIEW */}
+            <span className="md:hidden text-sm">
+              {session ? (
+                <img
+                  src="/account-logo.svg"
+                  alt="Logo"
+                  className="w-5 h-5"
+                />
+              ) : (
+                "Login"
+              )}
+            </span>
 
-            <img
-              src="/account-logo.svg"
-              alt="Logo"
-              className=" w-6 h-6 md:hidden"
-            />
-
-            {/* DESKTOP TEXT */}
+            {/* DESKTOP TEXT (unchanged) */}
             <span className="hidden md:block">
               {session ? "Account >" : "Login"}
             </span>
@@ -272,24 +281,31 @@ export default function ChatBox() {
           )}
 
 
-          {/* Upgrade button bottom left */}
           <div className="fixed bottom-16 left-2 z-50">
             <Link href="/upgrade">
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold shadow-lg flex items-center gap-2">
+              <button
+                className="
+        flex items-center gap-2 rounded-lg font-semibold
+        px-4 py-2
 
+        bg-transparent text-black shadow-none      /* Mobile clean */
+        md:bg-blue-500 md:text-white md:shadow-lg  /* Desktop full style */
+      "
+              >
                 {/* Mobile icon only */}
-                <span className="block md:hidden text-sm">
-                  ⚡
+                <span className="block md:hidden  text-sm relative bottom-2 left-0">
+                <BoltIcon className="w-5 h-5 text-black" />
                 </span>
 
                 {/* Desktop text only */}
-                <span className="hidden md:block">
+                <span className="hidden md:block relative text-sm">
                   Upgrade
                 </span>
-
               </button>
             </Link>
           </div>
+
+
 
 
           {messages.map((msg, i) => {

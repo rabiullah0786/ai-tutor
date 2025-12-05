@@ -7,14 +7,11 @@ import LoginButton from "./components/LoginButton";
 import { marked } from "marked";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import Link from "next/link";
-import { BoltIcon } from "@heroicons/react/24/solid";
+import DashboardMenu from "./components/DashboardMenu";
 
 
 
-
-
-export default function ChatBox() {
+export default function Page() {
   const { data: session } = useSession();
 
   const [showLoginOptions, setShowLoginOptions] = useState(false);
@@ -178,11 +175,11 @@ export default function ChatBox() {
     <div className="min-h-screen flex flex-col bg-gray-50">
 
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center p-4 bg-white shadow-md sticky  top-0 z-20">
+      <nav className="flex justify-between items-center p-2 bg-white shadow-md sticky  top-0 z-20">
         <div className=" reletive ">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
-            className="px-5 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
+            className="px-4 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
           >
             {/* MOBILE VIEW */}
             <span className="md:hidden text-sm">
@@ -203,8 +200,6 @@ export default function ChatBox() {
             </span>
           </button>
 
-
-
           {showLoginOptions && (
             <div className="absolute left-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border p-4 z-50">
               <LoginButton />
@@ -212,11 +207,24 @@ export default function ChatBox() {
           )}
         </div>
 
-        <div className="flex items-center gap-1 text-2xl font-bold text-blue-600">
-          <div className="w-9 h-10  " ><img src="/favicon.png" alt="" /></div>
-          Flixy-AI
+        <div className="flex items-center gap-2 text-xl font-bold text-blue-600">
+          {/* Logo */}
+          <div className="w-9 h-10">
+            <img src="/favicon.png" alt="Logo" className="w-full h-full object-contain" />
+          </div>
+
+          {/* Text */}
+          <span>Flixy-AI</span>
         </div>
+
+
+        <div className="flex justify-between items-center p-4">
+          <h1 className="text-2xl font-semibold"></h1>
+          <DashboardMenu />
+        </div>
+
       </nav>
+
 
       {/* MAIN AREA */}
       <main className="flex-1 flex flex-col items-center text-center px-2 py-2">
@@ -281,31 +289,6 @@ export default function ChatBox() {
           )}
 
 
-          <div className="fixed bottom-16 left-2 z-50">
-            <Link href="/upgrade">
-              <button
-                className="
-        flex items-center gap-2 rounded-lg font-semibold
-        px-4 py-2
-
-        bg-transparent text-black shadow-none      /* Mobile clean */
-        md:bg-blue-500 md:text-white md:shadow-lg  /* Desktop full style */
-      "
-              >
-                {/* Mobile icon only */}
-                <span className="block md:hidden  text-sm relative bottom-2 left-0">
-                <BoltIcon className="w-5 h-5 text-black" />
-                </span>
-
-                {/* Desktop text only */}
-                <span className="hidden md:block relative text-sm">
-                  Upgrade
-                </span>
-              </button>
-            </Link>
-          </div>
-
-
 
 
           {messages.map((msg, i) => {
@@ -365,7 +348,7 @@ export default function ChatBox() {
       {/* INPUT AREA */}
       <form
         onSubmit={handleSend}
-        className="fixed bottom-4 left-0 right-0 w-full max-w-2xl mx-auto flex items-center bg-white shadow-lg rounded-full p-2 border"
+        className="fixed bottom-4 left-0 right-0 w-full max-w-xl mx-auto flex items-center bg-white shadow-lg rounded-full p-2 border"
       >
         {/* + BUTTON */}
         <div className="relative mr-2">

@@ -1,73 +1,9 @@
-// "use client";
-
-// import { useState } from "react";
-// import { Menu, Settings } from "lucide-react";
-// import Link from "next/link";
-
-// export default function DashboardMenu() {
-//   const [open, setOpen] = useState(false);
-
-//   return (
-//     <div className="relative inline-block text-left">
-
-//       {/* Hamburger Button */}
-//       <button
-//         onClick={() => setOpen(!open)}
-//         className="p-2 rounded-full hover:bg-gray-200 transition"
-//       >
-//         <Menu size={24} />
-//       </button>
-
-//       {/* Dropdown */}
-//       {open && (
-//         <div className="absolute right-0 mt-2 w-48 bg-white border shadow-xl rounded-xl p-2 z-50">
-//           <ul className="space-y-1">
-
-//             {/* MCQ */}
-//             <li className="p-2 hover:bg-gray-100 rounded-md cursor-pointer w-full">
-//               MCQ Questions
-//             </li>
-
-//             {/* Upgrade (same size as others) */}
-//             <li className="p-2 hover:bg-gray-100 rounded-md cursor-pointer w-full">
-//               <Link href="/upgrade" className="block w-full text-left">
-//                 Upgrade
-//               </Link>
-//             </li>
-
-//             {/* User Account */}
-//             <li className="p-2 hover:bg-gray-100 rounded-md cursor-pointer w-full">
-//               User Account
-//             </li>
-
-//             {/* Education */}
-//             <li className="p-2 hover:bg-gray-100 rounded-md cursor-pointer w-full">
-//               Education
-//             </li>
-
-
-//             {/* Settings replaced with icon */}
-//             <li className="p-2 hover:bg-gray-100 rounded-md cursor-pointer flex items-center gap-2 w-full">
-//               <Settings size={18} /> Settings
-//             </li>
-
-//           </ul>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-
-
-
 "use client";
 
 import { useState, useRef, useEffect } from "react";
 import {
   Menu,
   Settings,
-  User,
   BookOpen,
   BadgeCheck,
   LogOut,
@@ -76,12 +12,30 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-export default function DashboardMenu() {
+export default function UserProfile() {
   const { data: session } = useSession();
+
+  const [image, setImage] = useState(session?.user?.image || null);
+
+  const galleryInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
+
+  const [openSheet, setOpenSheet] = useState(false);
+
   const [open, setOpen] = useState(false);
   const [comfort, setComfort] = useState(false);
   const menuRef = useRef(null);
+  const router = useRouter();
+
+
+  // Handle image change
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImage(URL.createObjectURL(file)); // Preview
+  };
 
   // CLOSE WHEN CLICK OUTSIDE + ESCAPE
   useEffect(() => {
@@ -101,6 +55,8 @@ export default function DashboardMenu() {
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);
+
+  if (!session) return null; // Prevent undefined session error
 
   return (
     <div className="relative inline-block text-left" ref={menuRef}>
@@ -127,17 +83,94 @@ export default function DashboardMenu() {
         >
           <ul className="space-y-1">
 
-            {/* 👇 User Profile (Only When Logged In) */}
-            {session && (
-              <li className="p-3 rounded-xl flex items-center gap-3 hover:bg-black/5">
-                <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
-                  {session.user?.name?.charAt(0)}
+            {/* User Profile */}
+            <li className="p-3 rounded-xl flex items-center gap-3 hover:bg-black/5">
+
+              {/* Profile Icon */}
+              <div
+                className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold cursor-pointer overflow-hidden"
+                onClick={() => setOpenSheet(true)}
+              >
+                {image ? (
+                  <img src={image} className="w-full h-full object-cover" />
+                ) : (
+                  session.user?.name?.charAt(0)
+                )}
+              </div>
+
+              <div>
+                <p className="font-medium">{session.user?.name}</p>
+                <p className="text-xs text-gray-500">{session.user?.email}</p>
+              </div>
+            </li>
+
+            {/* Hidden Inputs */}
+            <input
+              type="file"
+              accept="image/*"
+              ref={galleryInputRef}
+              className="hidden"
+              onChange={handleImage}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              ref={cameraInputRef}
+              className="hidden"
+              onChange={handleImage}
+            />
+
+            {/* Bottom Sheet */}
+            {openSheet && (
+              <div
+                className="fixed inset-0 bg-black/40 flex items-end z-50"
+                onClick={() => setOpenSheet(false)}
+              >
+                <div
+                  className="bg-white w-full p-5 rounded-t-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h2 className="text-center font-semibold text-lg mb-4">
+                    Select Option
+                  </h2>
+
+                  {/* Camera */}
+                  <button
+                    onClick={() => {
+                      setOpenSheet(false);
+                      cameraInputRef.current.click();
+                    }}
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
+                  >
+                    📸 Take photo
+                  </button>
+
+                  {/* Gallery */}
+                  <button
+                    onClick={() => {
+                      setOpenSheet(false);
+                      galleryInputRef.current.click();
+                    }}
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100"
+                  >
+                    🖼️ Select From Gallery
+                  </button>
+
+                  {/* Remove */}
+                  {image && (
+                    <button
+                      onClick={() => {
+                        setImage(null);
+                        setOpenSheet(false);
+                      }}
+                      className="w-full text-left p-3 rounded-lg hover:bg-gray-100 text-red-600"
+                    >
+                      ❌ Remove photo
+                    </button>
+                  )}
                 </div>
-                <div>
-                  <p className="font-medium">{session.user?.name}</p>
-                  <p className="text-xs text-gray-500">{session.user?.email}</p>
-                </div>
-              </li>
+              </div>
             )}
 
             <li className="p-3 rounded-xl cursor-pointer flex items-center gap-2 hover:bg-black/5">
@@ -152,19 +185,20 @@ export default function DashboardMenu() {
               </Link>
             </li>
 
-        
-
             <li className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer">
               <Settings size={18} />
               Settings
             </li>
 
-            <li className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer">
+            <li 
+              className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer">
+              <Link href="/exam" className="flex items-center gap-2">
               <BookOpen size={18} />
-              Education
+              ExamMode
+              </Link>
             </li>
 
-            {/* ⭐ LOGOUT OPTION - Only if Logged In */}
+
             {session && (
               <li
                 onClick={() => { signOut(); setOpen(false); }}
@@ -175,7 +209,6 @@ export default function DashboardMenu() {
               </li>
             )}
 
-            {/* Comfort Mode Toggle */}
             <li
               onClick={() => setComfort(!comfort)}
               className="p-3 rounded-xl cursor-pointer flex items-center gap-2 hover:bg-black/5 transition"

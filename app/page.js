@@ -10,9 +10,7 @@ import html2canvas from "html2canvas";
 import DashboardMenu from "./components/DashboardMenu";
 
 
-
-
-export default function Page() {
+export default function Page({ comfort, setComfort }) {
   const { data: session } = useSession();
 
   const [showLoginOptions, setShowLoginOptions] = useState(false);
@@ -176,7 +174,14 @@ export default function Page() {
     <div className="min-h-screen flex flex-col bg-gray-50">
 
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center p-2 bg-white shadow-md sticky  top-0 z-20">
+      {/* <nav className="flex justify-between items-center p-2 bg-white shadow-md sticky  top-0 z-20"> */}
+
+      <nav
+        className={`flex justify-between items-center p-2 shadow-md sticky top-0 z-20 
+  ${comfort ? "bg-yellow-300 text-black" : "bg-white text-black"}`}
+      >
+
+
         <div className=" reletive ">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
@@ -215,9 +220,8 @@ export default function Page() {
           </div>
 
           {/* Text */}
-          <span>Flixy-AI</span>
+          <span>Televora-AI</span>
         </div>
-
 
         <div className="flex justify-between items-center p-4">
           <h1 className="text-2xl font-semibold"></h1>

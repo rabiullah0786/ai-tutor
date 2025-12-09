@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Flixy-AI",
+  title: "Televora-AI",
   icons: {
     icon: "/favicon.png",
   },
@@ -24,3 +24,7 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+
+
+

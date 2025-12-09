@@ -16,25 +16,19 @@
   }
 }
 
+/* FIXED — Removed background override */
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
 }
 
-
+/* Highlight text style */
 mark {
-  background-color: #fff3a3; /* soft pastel yellow */
-  color: #222;              /* readable text color */
+  background-color: #fff3a3;
+  color: #222;
   padding: 2px 4px;
   border-radius: 4px;
   font-weight: 500;
 }
-
 
 .prose h2 {
   font-size: 1.5rem;
@@ -52,12 +46,11 @@ mark {
   display: none;
 }
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;    /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-
-/* homepage scrollbar hide code */
+/* Homepage scrollbar hide */
 html, body {
   overflow: hidden;
 }

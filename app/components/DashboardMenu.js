@@ -173,10 +173,7 @@ export default function UserProfile() {
               </div>
             )}
 
-            <li className="p-3 rounded-xl cursor-pointer flex items-center gap-2 hover:bg-black/5">
-              <BadgeCheck size={18} />
-              MCQ Questions
-            </li>
+          
 
             <li className="p-3 rounded-xl hover:bg-black/5 cursor-pointer">
               <Link href="/upgrade" className="flex items-center gap-2">

@@ -12,23 +12,21 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function UserProfile() {
   const { data: session } = useSession();
 
+  // User image or guest fallback
   const [image, setImage] = useState(session?.user?.image || null);
 
   const galleryInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
   const [openSheet, setOpenSheet] = useState(false);
-
   const [open, setOpen] = useState(false);
   const [comfort, setComfort] = useState(false);
-  const menuRef = useRef(null);
-  const router = useRouter();
 
+  const menuRef = useRef(null);
 
   // Handle image change
   const handleImage = (e) => {
@@ -37,7 +35,7 @@ export default function UserProfile() {
     setImage(URL.createObjectURL(file)); // Preview
   };
 
-  // CLOSE WHEN CLICK OUTSIDE + ESCAPE
+  // Close menu when clicked outside or escape pressed
   useEffect(() => {
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -50,21 +48,23 @@ export default function UserProfile() {
 
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);
 
-  if (!session) return null; // Prevent undefined session error
+  // 🚫 Removed: if (!session) return null;
 
   return (
     <div className="relative inline-block text-left" ref={menuRef}>
-      {/* Menu Button */}
+
+      {/* Hamburger Menu Button */}
       <button
         onClick={() => setOpen(!open)}
         className={`p-2 rounded-full transition backdrop-blur-lg 
-        ${comfort ? "bg-white/20 hover:bg-white/30" : "hover:bg-gray-200"}`}
+          ${comfort ? "bg-white/20 hover:bg-white/30" : "hover:bg-gray-200"}`}
       >
         <Menu size={24} />
       </button>
@@ -83,7 +83,7 @@ export default function UserProfile() {
         >
           <ul className="space-y-1">
 
-            {/* User Profile */}
+            {/* User Profile (Guest fallback) */}
             <li className="p-3 rounded-xl flex items-center gap-3 hover:bg-black/5">
 
               {/* Profile Icon */}
@@ -94,14 +94,19 @@ export default function UserProfile() {
                 {image ? (
                   <img src={image} className="w-full h-full object-cover" />
                 ) : (
-                  session.user?.name?.charAt(0)
+                  session?.user?.name?.charAt(0) || "G"
                 )}
               </div>
 
               <div>
-                <p className="font-medium">{session.user?.name}</p>
-                <p className="text-xs text-gray-500">{session.user?.email}</p>
+                <p className="font-medium">
+                  {session?.user?.name || "Guest User"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {session?.user?.email || "No email"}
+                </p>
               </div>
+
             </li>
 
             {/* Hidden Inputs */}
@@ -112,6 +117,7 @@ export default function UserProfile() {
               className="hidden"
               onChange={handleImage}
             />
+
             <input
               type="file"
               accept="image/*"
@@ -157,7 +163,6 @@ export default function UserProfile() {
                     🖼️ Select From Gallery
                   </button>
 
-                  {/* Remove */}
                   {image && (
                     <button
                       onClick={() => {
@@ -173,8 +178,6 @@ export default function UserProfile() {
               </div>
             )}
 
-          
-
             <li className="p-3 rounded-xl hover:bg-black/5 cursor-pointer">
               <Link href="/upgrade" className="flex items-center gap-2">
                 <BadgeCheck size={18} />
@@ -187,15 +190,14 @@ export default function UserProfile() {
               Settings
             </li>
 
-            <li 
-              className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer">
+            <li className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer">
               <Link href="/exam" className="flex items-center gap-2">
-              <BookOpen size={18} />
-              ExamMode
+                <BookOpen size={18} />
+                Exam Mode
               </Link>
             </li>
 
-
+            {/* Logout only if session exists */}
             {session && (
               <li
                 onClick={() => { signOut(); setOpen(false); }}
@@ -206,6 +208,7 @@ export default function UserProfile() {
               </li>
             )}
 
+            {/* Comfort Mode Toggle */}
             <li
               onClick={() => setComfort(!comfort)}
               className="p-3 rounded-xl cursor-pointer flex items-center gap-2 hover:bg-black/5 transition"
@@ -220,3 +223,5 @@ export default function UserProfile() {
     </div>
   );
 }
+
+

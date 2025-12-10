@@ -174,13 +174,7 @@ export default function Page({ comfort, setComfort }) {
     <div className="min-h-screen flex flex-col bg-gray-50">
 
       {/* NAVBAR */}
-      {/* <nav className="flex justify-between items-center p-2 bg-white shadow-md sticky  top-0 z-20"> */}
-
-      <nav
-        className={`flex justify-between items-center p-2 shadow-md sticky top-0 z-20 
-  ${comfort ? "bg-yellow-300 text-black" : "bg-white text-black"}`}
-      >
-
+      <nav className="flex justify-between items-center p-2 bg-white shadow-md sticky  top-0 z-20">
 
         <div className=" reletive ">
           <button
@@ -212,6 +206,8 @@ export default function Page({ comfort, setComfort }) {
             </div>
           )}
         </div>
+
+
 
         <div className="flex items-center gap-2 text-xl font-bold text-blue-600">
           {/* Logo */}

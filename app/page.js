@@ -209,7 +209,7 @@ export default function Page({ comfort, setComfort }) {
 
 
 
-        <div className="flex items-center gap-2 text-xl font-bold text-blue-600">
+        <div className="flex items-center gap-1 text-xl font-bold text-blue-600">
           {/* Logo */}
           <div className="w-9 h-10">
             <img src="/favicon.ico" alt="Logo" className="w-full h-full object-contain" />

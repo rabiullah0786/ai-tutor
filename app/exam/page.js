@@ -309,96 +309,109 @@ export default function ExamPage() {
 
     return (
       <div className="flex flex-col items-center p-6">
+
         {/* Certificate Card */}
         <div
           id="certificate-card"
-          className="relative w-[900px] h-[600px] bg-gradient-to-br from-white to-gray-50 shadow-2xl border-4 border-yellow-500 p-10 rounded-xl overflow-hidden"
+          className="
+    relative 
+    w-full 
+    max-w-[900px] 
+    bg-gradient-to-br from-white to-gray-50 
+    shadow-2xl border-4 border-yellow-500 
+    p-4 sm:p-10 rounded-xl overflow-hidden
+
+    /* height fix */
+    h-auto          /* mobile height auto */
+    sm:h-[600px]    /* desktop height same as original */
+  "
         >
+
           {/* Decorative top strip */}
-          <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+          <div className="absolute top-0 left-0 right-0 h-10 sm:h-16 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
 
           {/* Title */}
-          <h1 className="relative text-4xl font-extrabold text-yellow-700 mb-2 mt-4 text-center tracking-wider">
+          <h1 className="relative text-2xl sm:text-4xl font-extrabold text-yellow-700 mb-2 mt-4 py-2 text-center tracking-wider">
             Televora-AI Achievement Certificate
           </h1>
 
           {/* Awarded to */}
-          <p className="relative text-lg text-gray-600 mt-6 text-center">Awarded To</p>
-          <p className="relative text-5xl font-bold text-gray-800 text-center mt-2">{studentName}</p>
+          <p className="relative text-sm sm:text-lg text-gray-600 mt-6 text-center">
+            Awarded To
+          </p>
+          <p className="relative text-3xl sm:text-5xl font-bold text-gray-800 text-center mt-2">
+            {studentName}
+          </p>
 
           {/* Description */}
-          <p className="relative mt-6 text-base text-gray-600 text-center px-20">
+          <p className="relative mt-6 text-xs sm:text-base text-gray-600 text-center px-4 sm:px-20">
             This certificate is proudly presented to <b>{studentName}</b> for successfully completing
             the Televora-AI Online Examination.
           </p>
 
           {/* Score */}
-          <div className="relative mt-8 text-center">
-            <span className="text-2xl font-semibold text-gray-800">Score: </span>
-            <span className="text-2xl font-extrabold">{score}</span>
-            <span className="text-2xl font-semibold text-gray-800"> / {totalQuestions}</span>
-            <div className="mt-2 text-gray-600">Percentage: {percent}%</div>
-          </div>
-
-          {/* Founder & Company */}
-          <div className="absolute bottom-20 left-10 flex flex-col">
-            <div className="text-left">
-              <p className="font-medium text-gray-700">Founder</p>
+          <div className="relative mt-4 sm:mt-8 text-center">
+            <span className="text-sm sm:text-2xl font-semibold text-gray-800">Score: </span>
+            <span className="text-sm sm:text-2xl font-extrabold">{score}</span>
+            <span className="text-sm sm:text-2xl font-semibold text-gray-800"> / {totalQuestions}</span>
+            <div className="mt-1 sm:mt-2 text-[10px] sm:text-base text-gray-600">
+              Percentage: {percent}%
             </div>
           </div>
 
-          <div className="absolute bottom-20 right-10 text-right">
+          {/* Company */}
+          <div className="absolute bottom-14 sm:bottom-20 right-4 sm:right-10 text-right text-[10px] sm:text-base">
             <p className="font-medium text-gray-700">Company</p>
-            <p className="font-semibold text-lg">Televora-AI</p>
+            <p className="font-semibold text-xs sm:text-lg">Televora-AI</p>
           </div>
 
-          {/* qr code image add  */}
-          <div className="absolute bottom-6 left-6 flex items-center space-x-3">
+          {/* QR Code */}
+          <div className="absolute bottom-4 left-4 flex flex-col items-start">
             <img
               src="/qrcode.png"
               alt="Televora QR"
-              width={110}
-              height={110}
-              className="border p-1 bg-white rounded-sm shadow"
+              className="w-14 h-14 sm:w-28 sm:h-28 border p-1 bg-white rounded-sm shadow cursor-pointer"
               onClick={() => (window.location.href = QR_LINK)}
-              style={{ cursor: "pointer" }}
             />
-            <div className="text-sm text-gray-600">
+
+            {/* Text starting exactly from QR left edge */}
+            <div className="mt-1 text-[8px] sm:text-xs text-gray-600 leading-tight">
               <div>Scan to visit</div>
               <div className="font-semibold text-gray-800">televora.in</div>
             </div>
           </div>
 
 
-          {/* small seal / badge */}
-          <div className="absolute top-32 right-12 w-24 h-24 rounded-full bg-yellow-500 flex items-center justify-center shadow-xl">
-            <div className="text-white font-bold text-center"><img src="/favicon.ico" alt="" /></div>
+          {/* Badge */}
+          <div className="absolute top-20 sm:top-32 right-4 sm:right-12 w-14 h-14 sm:w-24 sm:h-24 rounded-full bg-yellow-500 flex items-center justify-center shadow-xl">
+            <img src="/favicon.ico" className="w-6 h-6 sm:w-12 sm:h-12" alt="" />
           </div>
         </div>
 
-        {/* Buttons: Download & Retake */}
-        <div className="mt-6 flex items-center gap-4">
+        {/* Buttons */}
+        <div className="mt-6 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={downloadPDF}
-            className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg shadow-lg text-lg"
+            className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg shadow-lg text-base sm:text-lg w-full sm:w-auto"
           >
             Download Certificate PDF
           </button>
 
           <button
             onClick={() => {
-              // reset exam
               setLevel(0);
               setQIndex(0);
               setScore(0);
               setFinished(false);
               setTime(20);
             }}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-3 rounded-lg w-full sm:w-auto"
           >
             Retake Exam
           </button>
         </div>
+
+
       </div>
     );
   }

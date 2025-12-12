@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { Share } from "lucide-react";
+
 
 export default function UserProfile() {
   const { data: session } = useSession();
@@ -216,6 +218,20 @@ export default function UserProfile() {
               {comfort ? <Sun size={18} /> : <Moon size={18} />}
               {comfort ? "Comfort Mode: On" : "Comfort Mode: Off"}
             </li>
+
+            <li
+  className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer"
+  onClick={() => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    const message = `Welcome to televora-ai 
+    we need ask, summarize, and more: ${url}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  }}
+>
+  <Share size={18} />
+  Share
+</li>
 
           </ul>
         </div>

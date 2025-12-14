@@ -18,6 +18,11 @@ export const metadata = {
   description:
     "Televora-AI is your smart learning assistant. Practice exams, study notes, AI chatbot, and personalized suggestions to boost your learning speed.",
 
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
+
   keywords: [
     "Televora",
     "AI learning",

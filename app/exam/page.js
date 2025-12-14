@@ -322,7 +322,7 @@ export default function ExamPage() {
     p-4 sm:p-10 rounded-xl overflow-hidden
 
     /* height fix */
-    h-auto          /* mobile height auto */
+    h-[600px]         /* mobile height auto */
     sm:h-[600px]    /* desktop height same as original */
   "
         >
@@ -360,17 +360,17 @@ export default function ExamPage() {
           </div>
 
           {/* Company */}
-          <div className="absolute bottom-14 sm:bottom-20 right-4 sm:right-10 text-right text-[10px] sm:text-base">
+          <div className="absolute bottom-8 sm:bottom-14 right-4 sm:right-10 text-right text-[10px] sm:text-base">
             <p className="font-medium text-gray-700">Company</p>
             <p className="font-semibold text-xs sm:text-lg">Televora-AI</p>
           </div>
 
           {/* QR Code */}
-          <div className="absolute bottom-4 left-4 flex flex-col items-start">
+          <div className="absolute bottom-2 left-4 flex flex-col items-start">
             <img
               src="/qrcode.png"
               alt="Televora QR"
-              className="w-14 h-14 sm:w-28 sm:h-28 border p-1 bg-white rounded-sm shadow cursor-pointer"
+              className="w-12 h-10 sm:w-24 sm:h-24 border p-1 bg-white rounded-sm shadow cursor-pointer"
               onClick={() => (window.location.href = QR_LINK)}
             />
 
@@ -383,7 +383,7 @@ export default function ExamPage() {
 
 
           {/* Badge */}
-          <div className="absolute top-20 sm:top-32 right-4 sm:right-12 w-14 h-14 sm:w-24 sm:h-24 rounded-full bg-yellow-500 flex items-center justify-center shadow-xl">
+          <div className="absolute top-0 sm:top-32 right-4 sm:right-12 w-10 h-10 sm:w-24 sm:h-24 rounded-full bg-yellow-500 flex items-center justify-center shadow-xl">
             <img src="/favicon.ico" className="w-6 h-6 sm:w-12 sm:h-12" alt="" />
           </div>
         </div>
@@ -410,7 +410,6 @@ export default function ExamPage() {
             Retake Exam
           </button>
         </div>
-
 
       </div>
     );

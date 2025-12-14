@@ -29,7 +29,7 @@ export const metadata = {
   authors: [{ name: "Televora-AI" }],
 
   openGraph: {
-    title: "Televora-AI | Smart Learning & Exam Practice",
+    title: "Televora-AI",
     description:
       "Study faster with AI-powered tools: notes, practice exams, chatbot, and personalized learning.",
     url: "https://televora.in",
@@ -65,6 +65,9 @@ export default function RootLayout({ children }) {
         className={`${inter.className} bg-white text-black dark:bg-gray-900 dark:text-white min-h-screen transition-colors duration-300`}
       >
         <Provider>{children}</Provider>
+        {/* Razorpay Checkout */}
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
       </body>
     </html>
   );

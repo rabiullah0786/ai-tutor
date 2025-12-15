@@ -207,8 +207,6 @@ export default function Page({ comfort, setComfort }) {
           )}
         </div>
 
-
-
         <div className="flex items-center gap-1 text-xl font-bold text-blue-600">
           {/* Logo */}
           <div className="w-9 h-10">
@@ -235,7 +233,7 @@ export default function Page({ comfort, setComfort }) {
 
         <div className="text-gray-600 mb-2 text-sm">
           <p>Get instant answers, explanations, and more</p>
-          <p>specially created for 10+12 students.</p>
+          <p>specially created for 9-12 students.</p>
         </div>
 
 
@@ -288,8 +286,6 @@ export default function Page({ comfort, setComfort }) {
               />
             </div>
           )}
-
-
 
 
           {messages.map((msg, i) => {

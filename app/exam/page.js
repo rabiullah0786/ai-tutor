@@ -322,7 +322,7 @@ export default function ExamPage() {
     p-4 sm:p-10 rounded-xl overflow-hidden
 
     /* height fix */
-    h-[600px]         /* mobile height auto */
+    h-[540px]         /* mobile height auto */
     sm:h-[600px]    /* desktop height same as original */
   "
         >
@@ -392,7 +392,7 @@ export default function ExamPage() {
         <div className="mt-6 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={downloadPDF}
-            className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg shadow-lg text-base sm:text-lg w-full sm:w-auto"
+            className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg shadow-lg text-base sm:text-lg w-full sm:w-auto"
           >
             Download Certificate PDF
           </button>
@@ -405,7 +405,7 @@ export default function ExamPage() {
               setFinished(false);
               setTime(20);
             }}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-3 rounded-lg w-full sm:w-auto"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-lg w-full sm:w-auto"
           >
             Retake Exam
           </button>

@@ -11,7 +11,7 @@ export const metadata = {
   metadataBase: new URL("https://televora.in"),
 
   title: {
-    default: "Televora-AI | Smarter Learning, Faster Revision",
+    default: "Televora-AI",
     template: "%s | Televora-AI",
   },
 

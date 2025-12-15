@@ -22,8 +22,9 @@ export const metadata = {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
   
-
   },
+  manifest: "/manifest.json",
+
 
   keywords: [
     "Televora",
@@ -63,7 +64,6 @@ export const metadata = {
     canonical: "https://televora.in",
   },
 
-  manifest: "/manifest.json",
 };
 
 

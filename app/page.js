@@ -296,31 +296,20 @@ export default function Page({ comfort, setComfort }) {
                 key={i}
                 className={
                   "relative p-5 rounded-2xl shadow-md max-w-none leading-relaxed text-[16px] " +
-
-                  // Bigger headings + underline + gaps
                   "[&_h1]:text-3xl [&_h1]:font-bold [&_h1]:underline [&_h1]:mb-6 " +
                   "[&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:underline [&_h2]:mb-5 " +
                   "[&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-4 " +
-
-                  // Paragraph spacing
                   "[&_p]:mb-6 " +
-
-                  // List spacing
                   "[&_ul]:mb-3 [&_ol]:mb-3 " +
-
                   (msg.role === "user"
                     ? "bg-blue-100 text-blue-900 py-2 mx-2 max-w-[70%]"
                     : "bg-gray-100 text-gray-900 mr-auto max-w-[85%]")
                 }
               >
                 {/* AI Answer */}
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: marked(msg.content || "")
-                  }}
-                />
+                <div dangerouslySetInnerHTML={{ __html: marked(msg.content || "") }} />
 
-                {/* PDF Button — only show for last AI message */}
+                {/* PDF Button */}
                 {isLastBotMessage && (
                   <button
                     onClick={() => downloadPDF(msg.content)}
@@ -332,6 +321,7 @@ export default function Page({ comfort, setComfort }) {
               </div>
             );
           })}
+
 
 
 

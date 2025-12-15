@@ -1,23 +1,20 @@
 
-
 import mongoose from "mongoose";
 import OpenAI from "openai";
 import { marked } from "marked";
 import connectDB from "../../../lib/mongodb";
 import Question from "../../../models/Question";
 
-// ================================
 // 📌 AI + DATABASE ENABLED ROUTE
-// ================================
+
 export async function POST(req) {
   try {
     await connectDB(); // <- DB Connect
     const contentType = req.headers.get("content-type") || "";
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    // ===========================
     // 📌 CLEAN MARKDOWN PROMPT
-    // ===========================
+
     function formatPrompt(userMessage) {
       return `
 You MUST answer ONLY in clean Markdown.
@@ -34,9 +31,7 @@ ${userMessage}
 `;
     }
 
-    // ================================
     // 🖼 IMAGE REQUEST HANDLER
-    // ================================
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
       const file = formData.get("image");
@@ -81,9 +76,8 @@ ${userMessage}
         marked(aiResponse) +
         `</div>`;
 
-      // ===========================
-      // 📌 SAVE TO DATABASE
-      // ===========================
+
+      // 📌 SAVE TO DATABASE   
       await Question.create({
         email,
         question: message,
@@ -103,9 +97,9 @@ ${userMessage}
       );
     }
 
-    // ================================
+
     // ✍ TEXT MESSAGE HANDLER
-    // ================================
+
     const { message, email } = await req.json();
 
     if (!message) {
@@ -129,9 +123,8 @@ ${userMessage}
       marked(aiResponse) +
       `</div>`;
 
-    // ===========================
-    // 📌 SAVE TO DATABASE
-    // ===========================
+
+    // 📌 SAVE TO DATABASE 
     await Question.create({
       email: email || "guest",
       question: message,

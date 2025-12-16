@@ -21,8 +21,9 @@ export const metadata = {
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
+    url: "/icon.png", sizes: "192x192", type: "image/png",
     apple: "/apple-icon.png",
-  
+
   },
   manifest: "/manifest.json",
 
@@ -48,6 +49,7 @@ export const metadata = {
     images: [
       {
         url: "https://televora.in/og-image.png",
+
         width: 1200,
         height: 630,
       },

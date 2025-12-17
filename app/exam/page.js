@@ -692,49 +692,78 @@ const QUESTIONS_BY_CLASS = {
   ],
 
   // NEET random placeholder questions
-  NEET: {
-    Physics: [
+  NEET: [
+    [
       { q: "What is the SI unit of Force?", options: ["Joule", "Newton", "Pascal", "Watt"], correct: 1 },
       { q: "Acceleration due to gravity on Earth?", options: ["9.8 m/s²", "10 m/s²", "8 m/s²", "9 m/s²"], correct: 0 },
       { q: "Formula for velocity?", options: ["v = u + at", "v = u - at", "v = at²/2", "v = u² + 2as"], correct: 0 },
       { q: "Work done formula?", options: ["W = F × d", "W = F / d", "W = F + d", "W = F² × d"], correct: 0 },
       { q: "Power is defined as?", options: ["Work × Time", "Work / Time", "Force × Distance", "Energy × Time"], correct: 1 },
-      
-    ],
-    Chemistry: [
       { q: "Chemical formula of water?", options: ["H2O", "CO2", "O2", "H2"], correct: 0 },
       { q: "Atomic number of Hydrogen?", options: ["1", "2", "3", "4"], correct: 0 },
       { q: "pH of neutral solution?", options: ["7", "0", "14", "1"], correct: 0 },
       { q: "NaCl is a?", options: ["Acid", "Base", "Salt", "Metal"], correct: 2 },
       { q: "Molecular formula of Glucose?", options: ["C6H12O6", "CH4", "C2H5OH", "C12H22O11"], correct: 0 },
-      
+
     ],
-    Biology: [
+    [
+      // 🧪 Chemistry
+      { q: "Chemical formula of water?", options: ["H2O", "CO2", "O2", "H2"], correct: 0 },
+      { q: "Atomic number of Hydrogen?", options: ["1", "2", "3", "4"], correct: 0 },
+      { q: "pH of neutral solution?", options: ["7", "0", "14", "1"], correct: 0 },
+      { q: "NaCl is a?", options: ["Acid", "Base", "Salt", "Metal"], correct: 2 },
+      { q: "Molecular formula of Glucose?", options: ["C6H12O6", "CH4", "C2H5OH", "C12H22O11"], correct: 0 },
+      { q: "Gas used in photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"], correct: 2 },
+      { q: "Strong acid among following?", options: ["CH3COOH", "HCl", "H2CO3", "NH4OH"], correct: 1 },
+      { q: "Atomic number of Oxygen?", options: ["6", "7", "8", "9"], correct: 2 },
+      { q: "SI unit of amount of substance?", options: ["Gram", "Mole", "Kilogram", "Litre"], correct: 1 },
+      { q: "Which is an alkali metal?", options: ["Sodium", "Calcium", "Iron", "Copper"], correct: 0 },
+    ],
+
+    [
+      // 🌱 Biology
+      { q: "Powerhouse of the cell?", options: ["Nucleus", "Ribosome", "Mitochondria", "Golgi body"], correct: 2 },
+      { q: "Functional unit of kidney?", options: ["Neuron", "Nephron", "Alveoli", "Axon"], correct: 1 },
+      { q: "Which vitamin is synthesized in skin?", options: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"], correct: 3 },
+      { q: "Blood group universal donor?", options: ["A", "B", "AB", "O"], correct: 3 },
+      { q: "Main site of photosynthesis?", options: ["Root", "Stem", "Leaf", "Flower"], correct: 2 },
+      { q: "Genetic material in humans?", options: ["RNA", "Protein", "DNA", "Carbohydrate"], correct: 2 },
+      { q: "Hormone regulating blood sugar?", options: ["Adrenaline", "Insulin", "Thyroxine", "Estrogen"], correct: 1 },
+      { q: "Normal human body temperature?", options: ["35°C", "36°C", "37°C", "38°C"], correct: 2 },
+      { q: "Part of brain controlling balance?", options: ["Cerebrum", "Medulla", "Cerebellum", "Pons"], correct: 2 },
+      { q: "Which organ detoxifies blood?", options: ["Kidney", "Liver", "Heart", "Lung"], correct: 1 },
+    ],
+
+    [
+      // ⚡ Physics
+      { q: "SI unit of force?", options: ["Joule", "Watt", "Newton", "Pascal"], correct: 2 },
+      { q: "Speed of light in vacuum?", options: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10⁵ m/s", "3×10⁷ m/s"], correct: 0 },
+      { q: "Unit of electric current?", options: ["Volt", "Ohm", "Ampere", "Coulomb"], correct: 2 },
+      { q: "Instrument used to measure electric current?", options: ["Voltmeter", "Ammeter", "Galvanometer", "Barometer"], correct: 1 },
+      { q: "SI unit of work?", options: ["Watt", "Newton", "Joule", "Pascal"], correct: 2 },
+      { q: "Which quantity has no direction?", options: ["Velocity", "Acceleration", "Force", "Speed"], correct: 3 },
+      { q: "Energy stored in stretched spring?", options: ["Kinetic", "Thermal", "Potential", "Electrical"], correct: 2 },
+      { q: "Mirror used in vehicle headlights?", options: ["Plane", "Convex", "Concave", "Cylindrical"], correct: 2 },
+      { q: "Unit of frequency?", options: ["Second", "Hertz", "Meter", "Tesla"], correct: 1 },
+      { q: "Which wave does not need medium?", options: ["Sound", "Water", "Electromagnetic", "Seismic"], correct: 2 }
+    ],
+
+    [
+      { q: "Chemical formula of water?", options: ["H2O", "CO2", "O2", "H2"], correct: 0 },
+      { q: "Atomic number of Hydrogen?", options: ["1", "2", "3", "4"], correct: 0 },
+      { q: "pH of neutral solution?", options: ["7", "0", "14", "1"], correct: 0 },
+      { q: "NaCl is a?", options: ["Acid", "Base", "Salt", "Metal"], correct: 2 },
+      { q: "Molecular formula of Glucose?", options: ["C6H12O6", "CH4", "C2H5OH", "C12H22O11"], correct: 0 },
       { q: "Functional unit of kidney?", options: ["Neuron", "Nephron", "Alveoli", "Osteon"], correct: 1 },
       { q: "Photosynthesis occurs in?", options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"], correct: 1 },
       { q: "Human blood group AB has?", options: ["A antigen", "B antigen", "A and B antigen", "No antigen"], correct: 2 },
       { q: "Largest organ in human body?", options: ["Heart", "Liver", "Skin", "Lungs"], correct: 2 },
       { q: "Which vitamin helps in clotting?", options: ["Vitamin A", "Vitamin C", "Vitamin K", "Vitamin D"], correct: 2 },
-      ],
-
-      Chemistry: [
-        { q: "Chemical formula of water?", options: ["H2O", "CO2", "O2", "H2"], correct: 0 },
-        { q: "Atomic number of Hydrogen?", options: ["1", "2", "3", "4"], correct: 0 },
-        { q: "pH of neutral solution?", options: ["7", "0", "14", "1"], correct: 0 },
-        { q: "NaCl is a?", options: ["Acid", "Base", "Salt", "Metal"], correct: 2 },
-        { q: "Molecular formula of Glucose?", options: ["C6H12O6", "CH4", "C2H5OH", "C12H22O11"], correct: 0 },
-        
-      ],
-      Biology: [
-        { q: "Functional unit of kidney?", options: ["Neuron", "Nephron", "Alveoli", "Osteon"], correct: 1 },
-        { q: "Photosynthesis occurs in?", options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"], correct: 1 },
-        { q: "Human blood group AB has?", options: ["A antigen", "B antigen", "A and B antigen", "No antigen"], correct: 2 },
-        { q: "Largest organ in human body?", options: ["Heart", "Liver", "Skin", "Lungs"], correct: 2 },
-        { q: "Which vitamin helps in clotting?", options: ["Vitamin A", "Vitamin C", "Vitamin K", "Vitamin D"], correct: 2 },
-        ],
-  },
-  
+    ],
+  ],
 }
+
+
 
 
 /* -------------------- MAIN COMPONENT -------------------- */
@@ -787,7 +816,10 @@ export default function ExamPage() {
   }
 
   const totalLevels = QUESTIONS_BY_CLASS[selectedClass].length;
-  const totalQuestions = QUESTIONS_BY_CLASS[selectedClass][0].length;
+
+  // ✅ NEET me 10 question per level, baki me jitne data me hain
+  const totalQuestions =
+    selectedClass === "NEET" ? 10 : QUESTIONS_BY_CLASS[selectedClass][level].length;
 
   const question = QUESTIONS_BY_CLASS[selectedClass][level][qIndex];
 
@@ -803,11 +835,11 @@ export default function ExamPage() {
   const nextQuestion = () => {
     if (qIndex + 1 < totalQuestions) {
       setQIndex(qIndex + 1);
-      setTime(20);
+      setTime(30);
     } else if (level + 1 < totalLevels) {
       setLevel(level + 1);
       setQIndex(0);
-      setTime(20);
+      setTime(30);
     } else {
       setFinished(true);
     }
@@ -831,7 +863,7 @@ export default function ExamPage() {
   const downloadPDF = async () => {
     const element = document.getElementById("certificate-card");
     if (!element) return;
-    const canvas = await html2canvas(element, { scale: 3, useCORS: true, allowTaint: true });
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: true });
     const img = canvas.toDataURL("image/png");
     const pdf = new jsPDF("landscape", "mm", "a4");
     const w = pdf.internal.pageSize.getWidth();

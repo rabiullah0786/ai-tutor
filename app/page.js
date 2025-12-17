@@ -1,6 +1,6 @@
 
 "use client";
-import { Mic, Send } from "lucide-react";
+import { MicOff, Mic, Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import LoginButton from "./components/LoginButton";
@@ -18,9 +18,11 @@ export default function Page({ comfort, setComfort }) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [answer, setAnswer] = useState("");
-
-
   const [selectedMode, setSelectedMode] = useState("Normal");
+
+  const [text, setText] = useState("");
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef(null);
 
   // NEW STATES (image upload)
   const [showPlusMenu, setShowPlusMenu] = useState(false);
@@ -36,6 +38,43 @@ export default function Page({ comfort, setComfort }) {
     }
   }, [messages]);
 
+  // mic buttn
+  const startListening = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+      alert("Speech recognition not supported in this browser");
+      return;
+    }
+
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = "en-IN"; // hi-IN for Hindi
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event) => {
+      let finalText = "";
+      let interimText = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalText += transcript + " ";
+        } else {
+          interimText += transcript;
+        }
+      }
+
+      setText((prev) => prev + finalText + interimText);
+    };
+
+    recognition.start();
+    recognitionRef.current = recognition;
+    setListening(true);
+  };
+
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    setListening(false);
+  };
 
 
 
@@ -378,10 +417,26 @@ export default function Page({ comfort, setComfort }) {
 
         <button
           type="submit"
-          className="p-3 rounded-full bg-blue-600 hover:bg-blue-700 ml-2"
+          className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 ml-2"
         >
-          <Send className="w-5 h-5 text-white" />
+          <Send className="w-4 h-4 text-white" />
         </button>
+
+        {/* mic button */}
+        <div className="flex justify-end mt-2 gap-2">
+          <button
+            onClick={listening ? stopListening : startListening}
+            className={`p-2 rounded-full transition ${listening
+                ? "bg-red-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            title={listening ? "Stop dictation" : "Start dictation"}
+          >
+            {listening ? <MicOff size={18} /> : <Mic size={18} />}
+          </button>
+        </div>
+
+
       </form>
 
       <footer className="text-center text-sm text-gray-500">

@@ -4,7 +4,6 @@ import "./globals.css";
 import Script from "next/script";
 
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -21,7 +20,7 @@ export const metadata = {
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
-    url: "/icon.png", sizes: "192x192", type: "image/png",
+    url: "/icon-192.png", sizes: "192x192", type: "image/png",
     apple: "/apple-icon.png",
 
   },
@@ -50,8 +49,8 @@ export const metadata = {
       {
         url: "https://televora.in/og-image.png",
 
-        width: 1200,
-        height: 630,
+        width: 192,
+        height: 192,
       },
     ],
     locale: "en_US",

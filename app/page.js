@@ -432,7 +432,7 @@ export default function Page({ comfort, setComfort }) {
               }`}
             title={listening ? "Stop dictation" : "Start dictation"}
           >
-            {listening ? <MicOff size={18} /> : <Mic size={18} />}
+            {listening ? <MicOff size={20} /> : <Mic size={20} />}
           </button>
         </div>
 

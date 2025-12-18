@@ -38,32 +38,34 @@ export default function Page({ comfort, setComfort }) {
     }
   }, [messages]);
 
-  // mic buttn
+  // mic button
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window)) {
-      alert("Speech recognition not supported in this browser");
+      alert("Speech recognition not supported");
       return;
     }
 
     const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = "en-IN"; // hi-IN for Hindi
-    recognition.continuous = true;
+    recognition.lang = "en-IN";
+    recognition.continuous = false;
     recognition.interimResults = true;
 
     recognition.onresult = (event) => {
-      let finalText = "";
-      let interimText = "";
+      let finalTranscript = "";
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          finalText += transcript + " ";
-        } else {
-          interimText += transcript;
+          finalTranscript += event.results[i][0].transcript + " ";
         }
       }
 
-      setText((prev) => prev + finalText + interimText);
+      if (finalTranscript) {
+        setMessage((prev) => prev + finalTranscript);
+      }
+    };
+
+    recognition.onend = () => {
+      setListening(false);
     };
 
     recognition.start();
@@ -73,9 +75,9 @@ export default function Page({ comfort, setComfort }) {
 
   const stopListening = () => {
     recognitionRef.current?.stop();
+    recognitionRef.current = null;
     setListening(false);
   };
-
 
 
   const downloadPDF = async (htmlContent) => {
@@ -213,12 +215,12 @@ export default function Page({ comfort, setComfort }) {
     <div className="min-h-screen flex flex-col bg-gray-50">
 
       {/* NAVBAR */}
-      <nav className="flex justify-between items-center p-2 bg-white shadow-md sticky  top-0 z-20">
+      <nav className="flex justify-between items-center py-1 px-2 shadow-md sticky top-0 z-20">
 
         <div className=" reletive ">
           <button
             onClick={() => setShowLoginOptions(!showLoginOptions)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
+            className="px-3 py-2 bg-blue-500 text-white rounded-full font-medium shadow hover:bg-blue-600 transition flex items-center gap-2"
           >
             {/* MOBILE VIEW */}
             <span className="md:hidden text-sm">
@@ -260,7 +262,6 @@ export default function Page({ comfort, setComfort }) {
           <h1 className="text-2xl font-semibold"></h1>
           <DashboardMenu />
         </div>
-
       </nav>
 
 
@@ -278,11 +279,11 @@ export default function Page({ comfort, setComfort }) {
 
 
         {/* MODE SELECT BUTTONS */}
-        <div className="flex gap-3 mb-4">
+        <div className="flex gap-3 mb-4 text-sm">
           <button
             onClick={() => setSelectedMode("Normal")}
             className={`px-4 py-2 rounded-xl border ${selectedMode === "Normal"
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-500 text-white"
               : "bg-white text-gray-700"
               }`}
           >
@@ -292,7 +293,7 @@ export default function Page({ comfort, setComfort }) {
           <button
             onClick={() => setSelectedMode("Explain")}
             className={`px-4 py-2 rounded-xl border ${selectedMode === "Explain"
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-500 text-white"
               : "bg-white text-gray-700"
               }`}
           >
@@ -302,7 +303,7 @@ export default function Page({ comfort, setComfort }) {
           <button
             onClick={() => setSelectedMode("Notes")}
             className={`px-4 py-2 rounded-xl border ${selectedMode === "Notes"
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-500 text-white"
               : "bg-white text-gray-700"
               }`}
           >
@@ -312,7 +313,7 @@ export default function Page({ comfort, setComfort }) {
 
         {/* CHAT BOX */}
         <div
-          className="w-full max-w-4xl space-y-4 text-left px-3 py-3 rounded-xl h-[50vh] overflow-y-auto bg-white shadow pb-16"
+          className="w-full max-w-4xl space-y-4 text-left px-3 py-3 rounded-xl h-[65vh] overflow-y-auto shadow pb-20"
           ref={scrollRef}
         >
           {/* IMAGE PREVIEW */}
@@ -363,7 +364,6 @@ export default function Page({ comfort, setComfort }) {
 
 
 
-
           {loading && (
             <div className="text-gray-500 italic animate-pulse">Thinking...</div>
           )}
@@ -374,22 +374,23 @@ export default function Page({ comfort, setComfort }) {
       {/* INPUT AREA */}
       <form
         onSubmit={handleSend}
-        className="fixed bottom-4 left-0 right-0 w-full max-w-xl mx-auto flex items-center bg-white shadow-lg rounded-full p-2 border"
+        className="fixed bottom-4 left-1 right-1 max-w-xl mx-auto
+             flex items-center gap-2
+             bg-white shadow-lg rounded-full p-2 border"
       >
         {/* + BUTTON */}
-        <div className="relative mr-2">
+        <div className="relative">
           <button
             type="button"
             onClick={() => setShowPlusMenu(!showPlusMenu)}
-            className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full text-2xl font-bold"
+            className="w-8 h-8 flex items-center justify-center
+                 bg-gray-200 rounded-full text-2xl font-bold"
           >
             +
           </button>
 
           {showPlusMenu && (
             <div className="absolute bottom-12 left-0 bg-white shadow-xl border rounded-xl p-3 w-40 space-y-2 z-50">
-
-              {/* IMAGE UPLOAD */}
               <label
                 htmlFor="imageUpload"
                 className="w-full block px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer"
@@ -407,39 +408,40 @@ export default function Page({ comfort, setComfort }) {
           )}
         </div>
 
+        {/* INPUT */}
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={`Ask your question... (${selectedMode})`}
-          className="flex-1 px-3 py-2  rounded-xl  focus:ring-0 focus:outline-none"
+          className="flex-1 px-3 py-2 rounded-xl focus:ring-0 focus:outline-none"
         />
 
+        {/* SEND BUTTON */}
         <button
           type="submit"
-          className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 ml-2"
+          className="p-2 rounded-full bg-blue-600 hover:bg-blue-700"
         >
           <Send className="w-4 h-4 text-white" />
         </button>
 
-        {/* mic button */}
-        <div className="flex justify-end mt-2 gap-2">
-          <button
-            onClick={listening ? stopListening : startListening}
-            className={`p-2 rounded-full transition ${listening
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            title={listening ? "Stop dictation" : "Start dictation"}
-          >
-            {listening ? <MicOff size={20} /> : <Mic size={20} />}
-          </button>
-        </div>
-
-
+        {/* MIC BUTTON */}
+        <button
+          type="button"
+          onClick={listening ? stopListening : startListening}
+          className={`p-2 rounded-full transition
+      ${listening
+              ? "bg-red-500 text-white"
+              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          title={listening ? "Stop dictation" : "Start dictation"}
+        >
+          {listening ? <MicOff size={20} /> : <Mic size={20} />}
+        </button>
       </form>
 
-      <footer className="text-center text-sm text-gray-500">
+
+      <footer className="text-center text-sm text-gray-500 ">
         © {new Date().getFullYear()} EduMind AI — All rights reserved.
       </footer>
     </div>

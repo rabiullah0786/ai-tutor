@@ -374,7 +374,7 @@ export default function Page({ comfort, setComfort }) {
       {/* INPUT AREA */}
       <form
         onSubmit={handleSend}
-        className="fixed bottom-4 left-1 right-1 max-w-xl mx-auto
+        className="fixed bottom-4 left-1 right-2 max-w-xl mx-auto
              flex items-center gap-2
              bg-white shadow-lg rounded-full p-2 border"
       >
@@ -429,7 +429,7 @@ export default function Page({ comfort, setComfort }) {
         <button
           type="button"
           onClick={listening ? stopListening : startListening}
-          className={`p-2 rounded-full transition
+          className={`p-2 rounded-full transition 
       ${listening
               ? "bg-red-500 text-white"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"

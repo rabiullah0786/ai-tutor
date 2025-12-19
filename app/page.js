@@ -374,9 +374,15 @@ export default function Page({ comfort, setComfort }) {
       {/* INPUT AREA */}
       <form
         onSubmit={handleSend}
-        className="fixed bottom-4 left-1 right-1 md: max-w-xl   mx-auto
-             flex items-center gap-2
-             bg-white shadow-lg rounded-full p-2 border"
+        className="
+        fixed bottom-4
+        w-[90%] sm:w-[94%] md:max-w-xl
+        left-1/2 -translate-x-1/2
+        flex items-center gap-1 sm:gap-2
+        bg-white shadow-lg rounded-full
+        p-1.5 sm:p-2 border
+      "
+      
       >
         {/* + BUTTON */}
         <div className="relative">

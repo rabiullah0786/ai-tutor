@@ -2,6 +2,8 @@ import Provider from "./provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import InstallButton from "./components/InstallButton";
+
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -75,6 +77,8 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.className} bg-white text-black dark:bg-gray-900 dark:text-white min-h-screen transition-colors duration-300`}
       >
+        <InstallButton />
+
         <Provider>{children}</Provider>
         {/* Razorpay Checkout */}
         <Script

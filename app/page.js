@@ -376,12 +376,12 @@ export default function Page({ comfort, setComfort }) {
         onSubmit={handleSend}
         className="
     fixed bottom-4
-    w-[88%] sm:w-[94%] md:max-w-xl
+    w-[94%] sm:w-[92%] md:max-w-xl
     left-1/2 -translate-x-1/2
     flex items-center
     gap-2 sm:gap-1.5 md:gap-2
     bg-white shadow-lg rounded-full
-    p-1 sm:p-1.5 md:p-2
+    p-2 sm:p-1.5 md:p-2
     border
   "
       >

@@ -375,22 +375,27 @@ export default function Page({ comfort, setComfort }) {
       <form
         onSubmit={handleSend}
         className="
-        fixed bottom-4
-        w-[90%] sm:w-[94%] md:max-w-xl
-        left-1/2 -translate-x-1/2
-        flex items-center gap-1 sm:gap-2
-        bg-white shadow-lg rounded-full
-        p-1.5 sm:p-2 border
-      "
-      
+    fixed bottom-4
+    w-[88%] sm:w-[92%] md:max-w-xl
+    left-1/2 -translate-x-1/2
+    flex items-center
+    gap-1 sm:gap-1.5 md:gap-2
+    bg-white shadow-lg rounded-full
+    p-1 sm:p-1.5 md:p-2
+    border
+  "
       >
         {/* + BUTTON */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setShowPlusMenu(!showPlusMenu)}
-            className="w-8 h-8 flex items-center justify-center
-                 bg-gray-200 rounded-full text-2xl font-bold"
+            className="
+        w-7 h-7 sm:w-8 sm:h-8
+        flex items-center justify-center
+        bg-gray-200 rounded-full
+        text-xl sm:text-2xl font-bold
+      "
           >
             +
           </button>
@@ -420,31 +425,51 @@ export default function Page({ comfort, setComfort }) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={`Ask your question... (${selectedMode})`}
-          className="flex-1 px-3 py-2 rounded-xl focus:ring-0 focus:outline-none"
+          className="
+      flex-1
+      px-2 sm:px-2.5 md:px-3
+      py-1 sm:py-1.5 md:py-2
+      text-sm sm:text-sm md:text-base
+      rounded-xl
+      focus:outline-none focus:ring-0
+    "
         />
 
         {/* SEND BUTTON */}
         <button
           type="submit"
-          className="p-2 rounded-full bg-blue-600 hover:bg-blue-700"
+          className="
+      p-1.5 sm:p-1.5 md:p-2
+      rounded-full
+      bg-blue-600 hover:bg-blue-700
+    "
         >
-          <Send className="w-5 h-5 text-white" />
+          <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </button>
 
         {/* MIC BUTTON */}
         <button
           type="button"
           onClick={listening ? stopListening : startListening}
-          className={`p-2 rounded-full transition  
+          className={`
+      p-1.5 sm:p-1.5 md:p-2
+      -translate-x-1 sm:-translate-x-0.5 md:translate-x-0
+      rounded-full transition
       ${listening
               ? "bg-red-500 text-white"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
+            }
+    `}
           title={listening ? "Stop dictation" : "Start dictation"}
         >
-          {listening ? <MicOff size={20} /> : <Mic size={20} />}
+          {listening ? (
+            <MicOff size={18} className="sm:w-5 sm:h-5" />
+          ) : (
+            <Mic size={18} className="sm:w-5 sm:h-5" />
+          )}
         </button>
       </form>
+
 
 
       <footer className="text-center text-sm text-gray-500 ">

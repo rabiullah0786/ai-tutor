@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "allowJs": true,
+    "checkJs": false,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["app/*"]
     }
-  }
+  },
+  "exclude": ["node_modules"]
 }
-
-
-
-
-
-

@@ -8,11 +8,15 @@ import {
   BadgeCheck,
   LogOut,
   Sun,
-  Moon
+  Moon,
+  LogIn
 } from "lucide-react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Share } from "lucide-react";
+import LoginButton from "./LoginButton";
+import InstallButton from "./InstallButton";
+
 
 
 export default function UserProfile() {
@@ -220,18 +224,23 @@ export default function UserProfile() {
             </li>
 
             <li
-  className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer"
-  onClick={() => {
-    const url = typeof window !== "undefined" ? window.location.href : "";
-    const message = `Welcome to televora-ai 
-    we need ask, summarize, and more: ${url}`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-  }}
->
-  <Share size={18} />
-  Share
-</li>
+              className="p-3 rounded-xl flex items-center gap-2 hover:bg-black/5 cursor-pointer"
+              onClick={() => {
+                const url = typeof window !== "undefined" ? window.location.href : "";
+                const message = `Welcome to televora-ai 
+                   we need ask, summarize, and more: ${url}`;
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, "_blank");
+              }}
+            >
+              <Share size={18} />
+              Share</li>
+
+
+            <li className="p-3 rounded-xl flex justify-end hover:bg-black/5">
+              <InstallButton />installbutton
+            </li>
+
 
           </ul>
         </div>

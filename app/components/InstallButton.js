@@ -1,35 +1,39 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
 export default function InstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showButton, setShowButton] = useState(false);
+  const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setInstalled(true);
+      return;
+    }
+
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowButton(true);
     };
+
     window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    return () =>
+      window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
-    if (choice.outcome === "accepted") setShowButton(false);
-  };
-
-  if (!showButton) return null;
+  if (installed || !deferredPrompt) return null;
 
   return (
     <button
-      onClick={handleInstall}
-      className="fixed bottom-20 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg"
+      className="px-4 py-2 bg-blue-600 text-white rounded"
+      onClick={async () => {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        setDeferredPrompt(null);
+      }}
     >
-      📲 Install App
+      Install App
     </button>
   );
 }

@@ -15,7 +15,6 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Share } from "lucide-react";
 import LoginButton from "./LoginButton";
-import InstallButton from "./InstallButton";
 
 
 
@@ -237,9 +236,7 @@ export default function UserProfile() {
               Share</li>
 
 
-            <li className="p-3 rounded-xl flex justify-end hover:bg-black/5">
-              <InstallButton />installbutton
-            </li>
+            
 
 
           </ul>

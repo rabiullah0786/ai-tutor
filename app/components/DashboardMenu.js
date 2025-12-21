@@ -236,14 +236,9 @@ export default function UserProfile() {
               Share</li>
 
 
-            
-
-
           </ul>
         </div>
       )}
     </div>
   );
 }
-
-

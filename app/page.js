@@ -353,7 +353,7 @@ export default function Page({ comfort, setComfort }) {
                 {isLastBotMessage && (
                   <button
                     onClick={() => downloadPDF(msg.content)}
-                    className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
+                    className="absolute top-2 right-3 bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
                   >
                     Download PDF
                   </button>
